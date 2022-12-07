@@ -1,20 +1,24 @@
+import { useUnit } from "effector-react";
 import { useEffect } from "react";
-import { usePostsModel } from "./model.effector";
+import { postsFactory } from "./model.effector";
+
+const vm1 = postsFactory("vm1");
+const vm2 = postsFactory("vm2");
 
 export function App() {
   return (
     <div className="container mx-auto h-screen">
       <h1 className="text-xl py-4">Road to FSD</h1>
       <div className="grid grid-cols-2 gap-4 grid-rows-2">
-        <Posts />
-        <Posts />
+        <Posts model={vm1} />
+        <Posts model={vm2} />
       </div>
     </div>
   );
 }
 
-function Posts() {
-  const vm = usePostsModel();
+function Posts({ model }: { model: ReturnType<typeof postsFactory> }) {
+  const vm = useUnit(model);
   useEffect(() => vm.mounted(), []);
 
   return (

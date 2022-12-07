@@ -1,15 +1,13 @@
 import { combine, createDomain, sample } from "effector";
-import { useUnit } from "effector-react";
 import { debug } from "patronum";
-import { useMemo } from "react";
 
 interface Post {
   id: number;
   title: string;
 }
 
-function postsFactory() {
-  const domain = createDomain("posts");
+export function postsFactory(domainName: string) {
+  const domain = createDomain(domainName);
   debug(domain);
 
   const $allPosts = domain.createStore<Array<Post>>([]);
@@ -108,9 +106,4 @@ function postsFactory() {
 
     mounted,
   };
-}
-
-export function usePostsModel() {
-  const model = useMemo(postsFactory, []);
-  return useUnit(model);
 }
