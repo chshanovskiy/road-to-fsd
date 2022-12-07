@@ -76,7 +76,7 @@ export function usePostsModel() {
     setFormCreate(undefined);
   };
 
-  const createPostFromFilter = () => {
+  const postFromFilterRequested = () => {
     apiCreatePost(filter);
     filterChanged("");
   };
@@ -151,7 +151,7 @@ export function usePostsModel() {
     /** Обработчик отправки формы */
     submitFormCreate,
     /** Специальный обработчик создания записи из значения фильтра */
-    createPostFromFilter,
+    postFromFilterRequested,
     /** Отмена и закрытие формы */
     cancelFormCreate,
 

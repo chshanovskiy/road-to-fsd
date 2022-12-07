@@ -140,7 +140,7 @@ function Posts() {
       {vm.emptyFilteredResults && (
         <button
           className="border rounded-lg bg-slate-100 py-2 px-4 hover:bg-slate-50"
-          onClick={() => vm.createPostFromFilter()}
+          onClick={() => vm.postFromFilterRequested()}
         >
           create new post "{vm.filter}"
         </button>

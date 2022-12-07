@@ -23,10 +23,11 @@ export function postsFactory(domainName: string) {
     $filter,
     $sortAsc,
     (allPosts, filter, sortAsc) => {
-      allPosts.sort(
-        (p1, p2) => p1.title.localeCompare(p2.title) * (sortAsc ? 1 : -1)
-      );
-      return allPosts.filter((post) => post.title.includes(filter));
+      return allPosts
+        .filter((post) => post.title.includes(filter))
+        .sort(
+          (p1, p2) => p1.title.localeCompare(p2.title) * (sortAsc ? 1 : -1)
+        );
     }
   );
 
@@ -38,7 +39,7 @@ export function postsFactory(domainName: string) {
     }
   );
 
-  const createPostFromFilter = domain.createEvent();
+  const postFromFilterRequested = domain.createEvent();
 
   const getPostsFx = domain.createEffect(async () => {
     const response = await fetch("https://jsonplaceholder.typicode.com/posts");
@@ -70,7 +71,7 @@ export function postsFactory(domainName: string) {
   });
 
   sample({
-    clock: createPostFromFilter,
+    clock: postFromFilterRequested,
     source: { allPosts: $allPosts, title: $filter },
     fn: ({ allPosts, title }) => {
       const id = Math.max(...allPosts.map((post) => post.id)) + 1;
@@ -80,9 +81,8 @@ export function postsFactory(domainName: string) {
   });
 
   sample({
-    clock: createPostFromFilter,
-    fn: () => "",
-    target: $filter,
+    clock: postFromFilterRequested,
+    target: $filter.reinit!,
   });
 
   return {
@@ -102,7 +102,7 @@ export function postsFactory(domainName: string) {
     sortChanged,
 
     /** Специальный обработчик создания записи из значения фильтра */
-    createPostFromFilter,
+    postFromFilterRequested,
 
     mounted,
   };
