@@ -3,16 +3,12 @@ import { useEffect } from "react";
 import { postsFactory } from "./model.effector";
 
 const vm1 = postsFactory("vm1");
-const vm2 = postsFactory("vm2");
 
 export function App() {
   return (
     <div className="container mx-auto h-screen">
       <h1 className="text-xl py-4">Road to FSD</h1>
-      <div className="grid grid-cols-2 gap-4 grid-rows-2">
-        <Posts model={vm1} />
-        <Posts model={vm2} />
-      </div>
+      <Posts model={vm1} />
     </div>
   );
 }
@@ -23,39 +19,41 @@ function Posts({ model }: { model: ReturnType<typeof postsFactory> }) {
 
   return (
     <div className="flex flex-col gap-y-4">
-      {/* <div className="flex gap-x-4 p-2 border rounded-lg items-center">
+      <div className="flex gap-x-4 p-2 border rounded-lg items-center">
         <h2 className="text-lg">Create</h2>
-        {vm.hasFormCreate() && (
+        {vm.$formCreateOpen && (
           <>
             <input
               className="border p-2 rounded-lg grow"
               placeholder="title"
-              value={vm.formCreate?.title}
-              onInput={(e) => vm.handleFormCreateChange(e.currentTarget.value)}
+              value={vm.$formCreate?.title}
+              onInput={(e) =>
+                vm.formCreateChanged({ title: e.currentTarget.value })
+              }
             />
             <button
               className="border rounded-lg bg-emerald-100 py-2 px-4 hover:bg-emerald-50"
-              onClick={() => vm.submitFormCreate()}
+              onClick={() => vm.formCreateSubmitted()}
             >
               submit
             </button>
             <button
               className="border rounded-lg bg-slate-100 py-2 px-4 hover:bg-slate-50"
-              onClick={() => vm.cancelFormCreate()}
+              onClick={() => vm.formCreateDiscarded()}
             >
               cancel
             </button>
           </>
         )}
-        {!vm.hasFormCreate() && (
+        {!vm.$formCreateOpen && (
           <button
             className="border rounded-lg bg-slate-100 py-2 px-4 hover:bg-slate-50"
-            onClick={() => vm.openFormCreate()}
+            onClick={() => vm.formCreateOpened()}
           >
             new post
           </button>
         )}
-      </div> */}
+      </div>
 
       <div className="flex gap-x-4">
         <input
@@ -74,72 +72,71 @@ function Posts({ model }: { model: ReturnType<typeof postsFactory> }) {
 
       {vm.$posts.map((post) => (
         <div key={post.id} className="flex gap-x-4">
-          {post.title}
-          {/* {vm.hasFormUpdate(post.id) && (
+          {vm.$formUpdateOpen === post.id && (
             <>
               <input
                 className="border p-2 rounded-lg grow"
                 placeholder="title"
-                value={vm.formUpdate?.title}
+                value={vm.$formUpdate?.title}
                 onInput={(e) =>
-                  vm.handleFormUpdateChange(e.currentTarget.value)
+                  vm.formUpdateChanged({ title: e.currentTarget.value })
                 }
               />
               <button
                 className="border rounded-lg bg-emerald-100 py-2 px-4 hover:bg-emerald-50"
-                onClick={() => vm.submitFormUpdate()}
+                onClick={() => vm.formUpdateSubmitted()}
               >
                 submit
               </button>
               <button
                 className="border rounded-lg bg-slate-100 py-2 px-4 hover:bg-slate-50"
-                onClick={() => vm.cancelFormUpdate()}
+                onClick={() => vm.formUpdateDiscarded()}
               >
                 cancel
               </button>
             </>
-          )} */}
-          {/* {!vm.hasFormUpdate(post.id) && (
+          )}
+          {vm.$formUpdateOpen !== post.id && (
             <>
               <input
                 className="border p-2 rounded-lg grow border-transparent"
                 defaultValue={post.title}
                 readOnly
               />
-              {vm.hasFormDelete(post.id) && (
+              {vm.$formDelete?.id === post.id && (
                 <>
                   <button
                     className="border rounded-lg bg-red-100 py-2 px-4 hover:bg-red-50"
-                    onClick={() => vm.submitFormDelete()}
+                    onClick={() => vm.formDeleteSubmitted()}
                   >
                     confirm
                   </button>
                   <button
                     className="border rounded-lg bg-slate-100 py-2 px-4 hover:bg-slate-50"
-                    onClick={() => vm.cancelFormDelete()}
+                    onClick={() => vm.formDeleteDiscarded()}
                   >
                     cancel
                   </button>
                 </>
               )}
-              {!vm.hasFormDelete(post.id) && (
+              {vm.$formDelete?.id !== post.id && (
                 <>
                   <button
                     className="border rounded-lg bg-emerald-100 py-2 px-4 hover:bg-emerald-50"
-                    onClick={() => vm.openFormUpdate(post.id)}
+                    onClick={() => vm.formUpdateOpened(post.id)}
                   >
                     update
                   </button>
                   <button
                     className="border rounded-lg bg-amber-100 py-2 px-4 hover:bg-amber-50"
-                    onClick={() => vm.openFormDelete(post.id)}
+                    onClick={() => vm.formDeleteOpened(post.id)}
                   >
                     delete
                   </button>
                 </>
               )}
             </>
-          )} */}
+          )}
         </div>
       ))}
 
