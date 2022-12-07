@@ -1,11 +1,11 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { App } from "./App.effector";
-// import { App } from "./App.hooks";
-import "./styles.css";
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
 
-createRoot(document.getElementById("root") as HTMLElement).render(
+import { App } from './app'
+import './styles.css'
+
+createRoot(document.querySelector('#root') as HTMLElement).render(
   <StrictMode>
     <App />
   </StrictMode>
-);
+)
