@@ -6,14 +6,23 @@ interface Post {
 }
 
 export function usePostsModel() {
-  const [allPosts, setAllPosts] = useState<Array<Post>>([]);  
+  const [allPosts, setAllPosts] = useState<Array<Post>>([]);
 
-  const [filter, setFilter] = useState<string>("");
-  const filteredPosts = useMemo(() => {
-    return allPosts.filter(post => post.title.includes(filter))
-  }, [allPosts, filter])
+  const [filter, filterChanged] = useState<string>("");
 
   const [sortAsc, setSortAsc] = useState<boolean>(true);
+  const sortChanged = () => setSortAsc((asc) => !asc);
+
+  const filteredPosts = useMemo(() => {
+    allPosts.sort(
+      (p1, p2) => p1.title.localeCompare(p2.title) * (sortAsc ? 1 : -1)
+    );
+    return allPosts.filter((post) => post.title.includes(filter));
+  }, [allPosts, filter, sortAsc]);
+
+  const emptyFilteredResults = useMemo(() => {
+    return filteredPosts.length === 0 && filter.length !== 0;
+  }, [filteredPosts, filter]);
 
   const [formCreate, setFormCreate] = useState<Omit<Post, "id">>();
   const [formUpdate, setFormUpdate] = useState<Post>();
@@ -25,7 +34,6 @@ export function usePostsModel() {
       .then((res) => res.json())
       .then(setAllPosts);
   }, []);
-
 
   const apiCreatePost = (title: Post["title"]) => {
     // Псевдозапрос к апи на создание записи
@@ -70,7 +78,7 @@ export function usePostsModel() {
 
   const createPostFromFilter = () => {
     apiCreatePost(filter);
-    setFilter("");
+    filterChanged("");
   };
 
   const openFormUpdate = (id: Post["id"]) => {
@@ -111,28 +119,21 @@ export function usePostsModel() {
   const hasFormUpdate = (id: Post["id"]) => formUpdate?.id === id;
   const hasFormDelete = (id: Post["id"]) => formDelete?.id === id;
 
-  const emptyFilteredResults = filteredPosts.length === 0 && filter.length !== 0;
-
-  const posts = filter ? filteredPosts : allPosts;
-  posts.sort((p1, p2) => p1.title.localeCompare(p2.title) * (sortAsc ? 1 : -1));
-
-  const changeSortAsc = () => setSortAsc((asc) => !asc);
-
   return {
-    /** Список записей для отображения (полный либо отфильтрованный) */
-    posts,
+    /** Список записей для отображения */
+    posts: filteredPosts,
 
     /** Значение фильтра */
     filter,
     /** Установка значения фильтра */
-    setFilter,
+    filterChanged,
     /** Флаг отсутсвия результатов фильтрации */
     emptyFilteredResults,
 
     /** Значение сортировки */
     sortAsc,
     /** Установка значения сортировки */
-    changeSortAsc,
+    sortChanged,
 
     /** Форма создания записи */
     formCreate,

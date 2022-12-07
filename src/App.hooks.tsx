@@ -1,10 +1,13 @@
-import { usePostsModel } from "./model";
+import { usePostsModel } from "./model.hooks";
 
 export function App() {
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto h-screen">
       <h1 className="text-xl py-4">Road to FSD</h1>
-      <Posts />
+      <div className="grid grid-cols-2 gap-4 grid-rows-2">
+        <Posts />
+        <Posts />
+      </div>
     </div>
   );
 }
@@ -53,11 +56,11 @@ function Posts() {
           className="border p-2 rounded-lg grow"
           placeholder="filter"
           value={vm.filter}
-          onInput={(e) => vm.setFilter(e.currentTarget.value)}
+          onInput={(e) => vm.filterChanged(e.currentTarget.value)}
         />
         <button
           className="border rounded-lg bg-violet-100 py-2 px-4 hover:bg-violet-50"
-          onClick={() => vm.changeSortAsc()}
+          onClick={() => vm.sortChanged()}
         >
           sorted by title {vm.sortAsc ? "asc" : "desc"}
         </button>
@@ -65,6 +68,7 @@ function Posts() {
 
       {vm.posts.map((post) => (
         <div key={post.id} className="flex gap-x-4">
+          {post.title}
           {vm.hasFormUpdate(post.id) && (
             <>
               <input
