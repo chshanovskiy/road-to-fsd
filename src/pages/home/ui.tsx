@@ -8,14 +8,14 @@ import { SearchFilter } from '../../features/search-filter'
 import { $posts, mounted } from './model'
 
 export function Home() {
-  const posts = useUnit($posts)
+  const vm = useUnit({ $posts })
   useEffect(mounted, [])
 
   return (
     <section className="flex flex-col gap-y-2">
       <FormCreate />
       <SearchFilter />
-      <Posts posts={posts} />
+      <Posts posts={vm.$posts} />
     </section>
   )
 }
